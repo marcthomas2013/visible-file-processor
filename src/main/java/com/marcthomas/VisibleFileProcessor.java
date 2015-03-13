@@ -1,7 +1,9 @@
 package com.marcthomas;
 
 import java.io.File;
-import java.util.function.Predicate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class is responsible for taking the provided folder path and process all of the
@@ -12,15 +14,13 @@ import java.util.function.Predicate;
 public class VisibleFileProcessor {
 	public void execute(String folderPath) {
 		File[] fileList = new File(folderPath).listFiles();
-
+		
 		if (fileList != null) {
-			processFiles(fileList, checkFile -> !checkFile.isHidden() && checkFile.isFile());
-		}
-	}
-
-	private void processFiles(File[] fileList, Predicate<File> checkFile) {
-		for (File file : fileList) {
-			if (checkFile.test(file)) {
+			List<File> files = Arrays.asList(fileList);
+			List<File> filteredFiles = files.stream().filter(checkFile -> !checkFile.isHidden() && checkFile.isFile())
+			.collect(Collectors.toList());
+			
+			for (File file : filteredFiles) {
 				System.out.println("Processing file... " + file.getAbsolutePath());
 			}
 		}
